@@ -1,0 +1,17 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    brew-gem (1.2.0)
+
+PLATFORMS
+  aarch64-linux-musl
+  ruby
+
+DEPENDENCIES
+  brew-gem (~> 1.2.0)
+
+CHECKSUMS
+  brew-gem (1.2.0)
+
+BUNDLED WITH
+  4.0.3

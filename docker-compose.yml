@@ -1,0 +1,8 @@
+---
+name: homebrew-tap
+services:
+  dev:
+    build:
+      context: .
+    volumes:
+      - ./:/app/:z
