@@ -14,26 +14,24 @@ main() {
   verify_file_exist_and_not_empty "$cargo_file_path"
 
   local version_from_cargo
-  version_from_cargo=$(grep -E '^version\s*=\s*".*"' "$cargo_file_path" | sed -E 's/version\s*=\s*"(.*)"/\1/')
+  version_from_cargo=$(awk -F '"' '/^version/ {print $2}' "$cargo_file_path")
   echo "Version from Cargo.toml: $version_from_cargo"
 
-  mkdir -v Formulas
-  local formula_file_path="Formulas/mac-cron.rb"
+  mkdir -vp Formula
+  local formula_file_path="Formula/mac-cron.rb"
 
   echo "Generating Homebrew formula at $formula_file_path ..."
   cat > "$formula_file_path" <<EOF
 class MacCron < Formula
-  version "$version_from_cargo"
   desc "Mac Cron"
   homepage "https://github.com/tlan16/mac-cron"
+  url "git@github.com:tlan16/mac-cron.git", branch: "main"
+  version "$version_from_cargo"
 
   depends_on "rust" => :build
-  depends_on "git" => :build
 
   def install
-    system "git", "clone", "--depth", "1", "--branch", "main",
-           "git@github.com:tlan16/mac-cron.git", buildpath
-    system "cargo", "install", "--locked", "--root", prefix, "--path", "."
+    system "cargo", "install", *std_cargo_args
   end
 
   test do
