@@ -16,6 +16,8 @@ class Bruno < Formula
     inreplace "packages/bruno-electron/electron-builder-config.js" do |s|
       s.gsub! "identity: 'Anoop MD (W7LPPWA48L)',", "identity: null,"
       s.gsub! "afterSign: 'notarize.js',", "afterSign: null,"
+      s.gsub! "target: 'dmg',", "target: 'dir',"
+      s.gsub! "arch: ['x64', 'arm64']", "arch: ['#{Hardware::CPU.intel? ? "x64" : "arm64"}']"
     end
 
     # Build dependencies in order
