@@ -9,6 +9,22 @@ class Bruno < Formula
 
   def install
     system "npm", "install"
+    # Fix typescript version issue in dependencies
+    system "npm", "install", "typescript@latest", "-D"
+
+    # Build dependencies in order
+    system "npm", "run", "build:schema-types"
+    system "npm", "run", "build:bruno-common"
+    system "npm", "run", "build:bruno-requests"
+    system "npm", "run", "build:bruno-filestore"
+    system "npm", "run", "build:bruno-converters"
+    system "npm", "run", "build:bruno-query"
+    system "npm", "run", "build:graphql-docs"
+
+    # Build the web app
+    system "npm", "run", "build:web"
+
+    # Build the electron app
     system "npm", "run", "build:electron:mac"
 
     # Install the app
