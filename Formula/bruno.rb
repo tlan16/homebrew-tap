@@ -12,6 +12,12 @@ class Bruno < Formula
     # Fix typescript version issue in dependencies
     system "npm", "install", "typescript@latest", "-D"
 
+    # Disable code signing and notarization
+    inreplace "packages/bruno-electron/electron-builder-config.js" do |s|
+      s.gsub! "identity: 'Anoop MD (W7LPPWA48L)',", "identity: null,"
+      s.gsub! "afterSign: 'notarize.js',", "afterSign: null,"
+    end
+
     # Build dependencies in order
     system "npm", "run", "build:schema-types"
     system "npm", "run", "build:bruno-common"
@@ -28,7 +34,10 @@ class Bruno < Formula
     system "npm", "run", "build:electron:mac"
 
     # Install the app
-    app_files = Dir["packages/bruno-electron/out/**/Bruno.app"]
+    target_arch = Hardware::CPU.intel? ? "mac" : "mac-arm64"
+    app_files = Dir["packages/bruno-electron/out/#{target_arch}/Bruno.app"]
+    app_files = Dir["packages/bruno-electron/out/**/Bruno.app"] if app_files.empty?
+
     raise "Could not find Bruno.app" if app_files.empty?
 
     prefix.install app_files.first
